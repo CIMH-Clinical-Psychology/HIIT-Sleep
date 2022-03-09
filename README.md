@@ -1,6 +1,6 @@
-# Sleep Spindle Analysis using YASA and Python
+# Sleep Spindle Analysis using YASA and Python for Absolute Beginners
 
-This README will explain to you how to perform spindle analysis in Python using [YASA (Yet Another Spindle Algorithm)](https://github.com/raphaelvallat/yasa)
+This README will explain to you how to perform spindle analysis in Python using [YASA (Yet Another Spindle Algorithm)](https://github.com/raphaelvallat/yasa) and is focused at people that do not have (a lot of) programming experience. 
 
 YASA has the advantage of having lots of examples for running it, which should make it easier to understand and adapt for individual purposes. The YASA examples use Jupyter Notebook, which are a beginner-friendly way of executing Python code. 
 
