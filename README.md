@@ -34,4 +34,8 @@ Jupyter Notebooks have the file ending `.ipynb`. Inside they are subdivided into
 
 If you want to get a bit more familiar with Jupyter Notebooks first, there are many great tutorials on the internet, e.g. this [German tutorial](https://www.youtube.com/watch?v=1S4Cgtkxqhs) which is quite beginner friendly.
 
+
+### 3. Start the tutorial for analysing a single subject
+
+
 For now, using the Jupyter Notebook browser, open the tutorial file on your local computer with the name `1-basic-sleep-spindle-analysis.ipynb` that you downloaded from this website. There you will find instructions on how to perform a first, simple sleep spindle analysis on a single subject.
