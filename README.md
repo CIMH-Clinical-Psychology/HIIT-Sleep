@@ -18,11 +18,11 @@ To run the analysis you need to run the following steps and install the followin
 
 3. Download the contents of this GitHub repository to your local computer inside your home directory (e.g. by clicking on the green `Code` button and then `download ZIP`)
 
-![](https://github.com/CIMH-Clinical-Psychology/HIIT-Sleep/blob/main/md_assets/2022-03-09-15-23-15-image.png)
+![](https://raw.githubusercontent.com/CIMH-Clinical-Psychology/HIIT-Sleep/blob/main/md_assets/2022-03-09-15-23-15-image.png)
 
 ### 2. Using Jupyter Notebooks
 
-Start the Jupyter Notebook application by either directly running`Jupyter Notebook` from the [start menu](https://github.com/CIMH-Clinical-Psychology/HIIT-Sleep/blob/main/md_assets/2022-03-09-11-16-30-image.png) or typing `jupyter notebook` into the [Anaconda Prompt](https://github.com/CIMH-Clinical-Psychology/HIIT-Sleep/blob/main/md_assets/2022-03-09-11-18-03-image.png). A browser will open automatically. Within the browser, browse to the folder where your notebooks are located. Be aware that by default, the Jupyter Notebook browser only has access to your user folder, so you need to place the notebook files somewhere there (e.g. your Desktop or Documents). The EEG data does not need to be there necessarily, just the notebook files.
+Start the Jupyter Notebook application by either directly running`Jupyter Notebook` from the [start menu](https://raw.githubusercontent.com/CIMH-Clinical-Psychology/HIIT-Sleep/blob/main/md_assets/2022-03-09-11-16-30-image.png) or typing `jupyter notebook` into the [Anaconda Prompt](https://raw.githubusercontent.com/CIMH-Clinical-Psychology/HIIT-Sleep/blob/main/md_assets/2022-03-09-11-18-03-image.png). A browser will open automatically. Within the browser, browse to the folder where your notebooks are located. Be aware that by default, the Jupyter Notebook browser only has access to your user folder, so you need to place the notebook files somewhere there (e.g. your Desktop or Documents). The EEG data does not need to be there necessarily, just the notebook files.
 
 Excursion: What is Jupyter Notebooks?
 
