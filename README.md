@@ -18,7 +18,7 @@ To run the analysis you need to run the following steps and install the followin
 
 3. Download the contents of this GitHub repository to your local computer inside your home directory (e.g. by clicking on the green `Code` button and then `download ZIP`)
 
-![](C:\Users\Simon\Desktop\HIIT-Sleep\md_assets\2022-03-09-15-23-15-image.png)
+![](.\md_assets\2022-03-09-15-23-15-image.png)
 
 ### 2. Using Jupyter Notebooks
 
