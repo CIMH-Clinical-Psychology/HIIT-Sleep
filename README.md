@@ -2,11 +2,7 @@
 
 This README will explain to you how to perform spindle analysis in Python using [YASA (Yet Another Spindle Algorithm)](https://github.com/raphaelvallat/yasa)
 
-
-
 YASA has the advantage of having lots of examples for running it, which should make it easier to understand and adapt for individual purposes. The YASA examples use Jupyter Notebook, which are a beginner-friendly way of executing Python code. 
-
-
 
 ### 1. Prerequisite
 
@@ -22,7 +18,7 @@ To run the analysis you need to run the following steps and install the followin
 
 3. Download the contents of this GitHub repository to your local computer inside your home directory (e.g. by clicking on the green `Code` button and then `download ZIP`)
 
-
+![](C:\Users\Simon\Desktop\HIIT-Sleep\md_assets\2022-03-09-15-23-15-image.png)
 
 ### 2. Using Jupyter Notebooks
 
@@ -38,8 +34,4 @@ Jupyter Notebooks have the file ending `.ipynb`. Inside they are subdivided into
 
 If you want to get a bit more familiar with Jupyter Notebooks first, there are many great tutorials on the internet, e.g. this [German tutorial](https://www.youtube.com/watch?v=1S4Cgtkxqhs) which is quite beginner friendly.
 
-
-
 For now, using the browser, open the tutorial
-
-
