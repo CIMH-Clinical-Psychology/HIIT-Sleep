@@ -1,0 +1,2 @@
+python spindle_analysis_GUI.py
+pause

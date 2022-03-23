@@ -15,7 +15,7 @@ import pandas as pd
 from tqdm import tqdm
 from pyedflib import highlevel
 
-
+print('Please select EDF files for loading..')
 #%% choose files to run analysis on
 edf_files = utils.choose_files(exts='edf')
 
