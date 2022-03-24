@@ -7,6 +7,7 @@ sleep_utils etc etc.
 
 @author: Simon
 """
+import pip
 import os
 import warnings
 import numpy as np
@@ -18,6 +19,13 @@ from tkinter import  Tk
 
 stages_dict = {'WAKE':0, 'N1': 1, 'N2': 2, 'N3': 3, 'REM': 4, **{i:i for i in range(5, 10)}}
 stages_dict = {v: k for k, v in stages_dict.items()}
+
+
+def install(package):
+    if hasattr(pip, 'main'):
+        pip.main(['install', package])
+    else:
+        pip._internal.main(['install', package])
 
 
 def choose_files(default_dir=None, exts='txt', title='Choose file(s)'):

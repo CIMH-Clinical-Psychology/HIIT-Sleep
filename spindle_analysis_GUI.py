@@ -4,7 +4,24 @@ Created on Mon Mar 21 11:06:38 2022
 
 @author: Simon
 """
+import os
+import importlib
+try:
+    import utils
+except ModuleNotFoundError:
+    raise ModuleNotFoundError('Could not find utils script - please check you are' 
+                              'running in the same folder as the spindle repository,'
+                              ' and that utils.py is located there')
+
 print('Loading libraries...')
+libraries = ['pandas', 'numpy', 'mne', 'yasa', 'easygui', 'tqdm', 'pyedflib', 'joblib']
+for lib in libraries:
+    try:
+        importlib.import_module(lib)
+    except ModuleNotFoundError:
+        print(f'Library `{lib}` not found, attempting to install')
+        utils.install(lib)
+        
 try:
     import os
     import mne
@@ -16,15 +33,10 @@ try:
     from tqdm import tqdm
     from pyedflib import highlevel
 except ModuleNotFoundError as e:
+    
     raise ModuleNotFoundError(f'Could not find library {e.name}\nPlease install '
                               f'via the command `pip install {e.name}`')
 
-try:
-    import utils
-except ModuleNotFoundError:
-    raise ModuleNotFoundError('Could not find utils script - please check you are' 
-                              'running in the same folder as the spindle repository,'
-                              ' and that utils.py is located there')
 
 
 if __name__=='__main__':
