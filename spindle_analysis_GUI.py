@@ -110,12 +110,15 @@ if __name__=='__main__':
 
 #%% run spindle analysis
 
-# tqdm_loop = tqdm(total=len(edf_files))
+tqdm_loop = tqdm(total=len(edf_files))
 def set_desc(desc):
-    print(f'{desc}')
+    tqdm_loop.set_description(f'{desc} - {os.path.basename(edf_file)}')
 
 
-def run_yasa(edf_file):
+all_summary = pd.DataFrame()
+
+for edf_file in edf_files:
+    summary_csv = os.path.join(os.path.dirname(edf_file), f'_summary_{run_name}n{len(edf_files)}_{method}.csv')
     spindles_csv = f'{run_name}{edf_file}_spindles_yasa_{method}.csv'
 
     subj = os.path.basename(edf_file)    
@@ -151,6 +154,9 @@ def run_yasa(edf_file):
         samples_stages = sum([(hypno_resampled==s).sum() for s in stages_sel])
         stages_minutes = samples_stages/60/raw.info['sfreq']
         summary['Density'] = len(spindles_subj)/stages_minutes
+        summary['Stage'] = ' & '.join([str(x) for x in stages_sel])
+        summary.name = subj
+        all_summary = all_summary.append(summary)
     elif report_mode=='individually':
         for stage in stages_sel:
             if not stage in spindles_subj['Stage']: continue
@@ -159,24 +165,19 @@ def run_yasa(edf_file):
             samples_stages = np.nansum(hypno_resampled==stage)
             stages_minutes = samples_stages/60/raw.info['sfreq']
             summary['Density'] = len(spindles_stage)/stages_minutes
+            summary['Stage'] = str(stage)
+            summary.name = subj
+            all_summary = all_summary.append(summary)
     else:
         raise ValueError(f'mode not known: {report_mode}')
         
-    summary.name = subj
-    summary.to_csv(spindles_csv)
-    # tqdm_loop.update()
-    
-    return summary
-    
+        
+    all_summary.sort_values('Stage')
+    all_summary.to_csv(summary_csv)
 
-summaries = Parallel(n_jobs=cpu_count()//2)(delayed(run_yasa)(edf_file) for edf_file in tqdm(edf_files, desc='running spindle analysis on file'))
 
-summary_csv = os.path.join(os.path.dirname(edf_file), f'_summary_{run_name}_n{len(edf_files)}_subjects_{method}.csv')
 
-all_summary = pd.DataFrame()
-for summary in summaries:
-    all_summary = all_summary.append(summary)
-all_summary.to_csv(summary_csv)
+
 
 try:
     import pandasgui
