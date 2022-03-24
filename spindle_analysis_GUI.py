@@ -105,6 +105,7 @@ if __name__=='__main__':
     run_name = easygui.enterbox('(optional) Give a name to your analysis (will be pre-pended to the results filename)\n'
                                 'Leave empty if you don\'t want to name your analysis')
     if run_name: run_name += '_'
+    
     method = 'yasa'
 
 
@@ -119,7 +120,7 @@ all_summary = pd.DataFrame()
 
 for edf_file in edf_files:
     summary_csv = os.path.join(os.path.dirname(edf_file), f'_summary_{run_name}n{len(edf_files)}_{method}.csv')
-    spindles_csv = f'{run_name}{edf_file}_spindles_yasa_{method}.csv'
+    spindles_csv = f'{run_name}{edf_file}_spindles_{method}.csv'
 
     subj = os.path.basename(edf_file)    
 
@@ -165,17 +166,16 @@ for edf_file in edf_files:
             samples_stages = np.nansum(hypno_resampled==stage)
             stages_minutes = samples_stages/60/raw.info['sfreq']
             summary['Density'] = len(spindles_stage)/stages_minutes
-            summary['Stage'] = str(stage)
+            summary['Stage'] = stage
             summary.name = subj
             all_summary = all_summary.append(summary)
     else:
         raise ValueError(f'mode not known: {report_mode}')
         
-        
-    all_summary.sort_values('Stage')
+    tqdm_loop.update()    
+    all_summary['Stage'] = all_summary['Stage'].astype(str)
+    all_summary = all_summary.sort_values('Stage')
     all_summary.to_csv(summary_csv)
-
-
 
 
 
