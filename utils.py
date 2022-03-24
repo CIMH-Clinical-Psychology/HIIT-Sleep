@@ -12,7 +12,6 @@ import os
 import warnings
 import numpy as np
 from io import StringIO
-from natsort import natsort_key
 from tkinter.filedialog import askopenfilenames, askdirectory
 from tkinter import simpledialog
 from tkinter import  Tk
