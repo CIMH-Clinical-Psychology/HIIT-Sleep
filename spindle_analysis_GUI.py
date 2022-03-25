@@ -18,7 +18,6 @@ libraries = ['pandas', 'numpy', 'mne', 'yasa', 'easygui', 'tqdm', 'pyedflib', 'j
 for lib in libraries:
     try:
         print(f'Loading {lib}...')
-
         importlib.import_module(lib)
     except ModuleNotFoundError:
         print(f'Library `{lib}` not found, attempting to install')
@@ -133,11 +132,10 @@ def set_desc(desc):
 all_summary = pd.DataFrame()
 
 for edf_file in edf_files:
-    summary_csv = os.path.join(os.path.dirname(edf_file), f'_summary_{run_name}n{len(edf_files)}_{method}.csv')
-    spindles_csv = f'{run_name}{edf_file}_spindles_{method}.csv'
-
     subj = os.path.basename(edf_file)    
 
+    summary_csv = os.path.join(os.path.dirname(edf_file), f'_summary_{run_name}n{len(edf_files)}_{method}.csv')
+    spindles_csv = f'{run_name}{subj}_spindles_{method}.csv'
     
     set_desc('Loading file')
     ch_ignore = all_chs.difference([ch, ref])
