@@ -14,9 +14,11 @@ except ModuleNotFoundError:
                               ' and that utils.py is located there')
 
 print('Loading libraries...')
-libraries = ['pandas', 'numpy', 'mne', 'yasa', 'easygui', 'tqdm', 'pyedflib', 'joblib']
+libraries = ['pandas', 'numpy', 'mne', 'yasa', 'easygui', 'tqdm', 'pyedflib', 'joblib', 'pandasgui']
 for lib in libraries:
     try:
+        print(f'Loading {lib}...')
+
         importlib.import_module(lib)
     except ModuleNotFoundError:
         print(f'Library `{lib}` not found, attempting to install')
@@ -78,8 +80,8 @@ if __name__=='__main__':
     common_chs = sorted(common_chs)
     #%% select channel to run analysis on
     
-    preselect_ch = common_chs.index('C3') if 'C3' in common_chs else 0
-    preselect_ref = common_chs.index('M2') if 'C3' in common_chs else 0
+    preselect_ch = common_chs.index('C4') if 'C4' in common_chs else 0
+    preselect_ref = common_chs.index('M1') if 'C4' in common_chs else 0
     
     ch = easygui.choicebox(f'Please select main channel for running the spindle analysis.\nHere is a list of channels that is available in all recordings.',  
                            choices=common_chs, preselect=preselect_ch)
@@ -169,7 +171,7 @@ for edf_file in edf_files:
         summary['Density'] = len(spindles_subj)/stages_minutes
         summary['Stage'] = ' & '.join([str(x) for x in stages_sel])
         summary.name = subj
-        all_summary = all_summary.append(summary)
+        all_summary = pd.concat([all_summary, summary])
     elif report_mode=='individually':
         for stage in stages_sel:
             if not stage in spindles_subj['Stage']: continue
@@ -180,7 +182,7 @@ for edf_file in edf_files:
             summary['Density'] = len(spindles_stage)/stages_minutes
             summary['Stage'] = stage
             summary.name = subj
-            all_summary = all_summary.append(summary)
+            all_summary = pd.concat([all_summary, summary])
     else:
         raise ValueError(f'mode not known: {report_mode}')
         
