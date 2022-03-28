@@ -14,7 +14,7 @@ except ModuleNotFoundError:
                               ' and that utils.py is located there')
 
 print('Loading libraries...')
-libraries = ['pandas', 'numpy', 'mne', 'yasa', 'easygui', 'tqdm', 'pyedflib', 'joblib', 'pandasgui']
+libraries = ['pandas', 'numpy', 'mne', 'yasa', 'easygui', 'tqdm', 'pyedflib', 'joblib']
 for lib in libraries:
     try:
         print(f'Loading {lib}...')
