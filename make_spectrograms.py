@@ -119,14 +119,13 @@ if __name__=='__main__':
         hypno_file = utils.infer_hypno_file(edf_file)
         if hypno_file:
             hypno = sleep_utils.read_hypno(hypno_file, verbose=False)
-            sleep_utils.plot_hypnogram(hypno, ax=ax2, verbose=False)
-            
+            sleep_utils.plot_hypnogram(hypno, ax=ax2, verbose=False) 
         else:
           print( f'No hypnogram found for {edf_file}, make sure it\'s in the same folder')
-
+          
         tqdm_loop.set_description('Creating spectrogram')
-        
-        sleep_utils.specgram_multitaper(data[:], sfreqs[0], ufreq=20, ax=ax1)
+        total_samples = int(len(hypno)*30*sfreqs[0])
+        sleep_utils.specgram_multitaper(data, sfreqs[0], ufreq=35, ax=ax1)
         
         tqdm_loop.set_description('Saving plot')
         fig.savefig(png_file)
