@@ -7,17 +7,23 @@ sleep_utils etc etc.
 
 @author: Simon
 """
+
 import sys
 import os
+import mne
 import subprocess
 import warnings
+
+from pyedflib import highlevel
+import numpy as np
 from io import StringIO
+from sleep_utils.sigproc import resample
 from tkinter.filedialog import askopenfilenames, askdirectory
 from tkinter import simpledialog
 from tkinter import  Tk
 import matplotlib
 import matplotlib.pyplot as plt
-
+from scipy.ndimage.filters import maximum_filter, median_filter
 
 
 stages_dict = {'WAKE':0, 'N1': 1, 'N2': 2, 'N3': 3, 'REM': 4, **{i:i for i in range(5, 10)}}
@@ -60,6 +66,41 @@ def choose_files(default_dir=None, exts='txt', title='Choose file(s)'):
 
     return files
     
+
+def load_edf(edf_file, channels, references, crop_to_hypno=True):
+    """convenience function to load an EDF+ with references without MNE.
+    Workaround for https://github.com/mne-tools/mne-python/issues/10635"""
+    
+    if not isinstance(channels, list):
+        channels = [channels]
+    if not isinstance(references, list):
+        references = [references]
+        
+    sigs, sigheads, header = highlevel.read_edf(edf_file, 
+                                                ch_names=channels+references)
+    sigs = [sig * 1e-6 for sig in sigs]
+    
+    assert [shead['label'] in channels for shead in sigheads[:len(channels)]]
+    assert [shead['label'] in references for shead in sigheads[len(channels):]]
+
+    sfreqs = [s['sample_rate'] for s in sigheads]
+    labels = [s['label'] for s in sigheads]
+    
+    if len(set(sfreqs))>1:
+        sigs = [resample(x, sfreqs[i], min(sfreqs)) for i, x in enumerate(sigs)]
+
+    if crop_to_hypno:
+        sigs = [sig[:int(len(sig)-len(sig)%(30*min(sfreqs)))] for sig in sigs]
+
+    info = mne.create_info(labels, min(sfreqs), ch_types='eeg')
+    raw = mne.io.RawArray(sigs, info)
+    raw._filenames = [edf_file.replace('/', '\\')]
+    
+    raw, _ = mne.set_eeg_reference(raw, ref_channels=references)
+    raw.pick(channels)
+    
+    return raw
+
     
 def infer_hypno_file(filename):
     folder, filename = os.path.split(filename)
@@ -75,4 +116,11 @@ def infer_hypno_file(filename):
     warnings.warn(f'No Hypnogram found for {filename}, looked for: {possible_names}')
     return False
 
+
+
+def list_files(folder, ext='edf'):
+    """small helper function that lists a folders contents"""
+    files = [os.path.join(folder, f) for f in os.listdir(folder)]
+    files = [file for file in files if file.endswith(ext)]
+    return files
 
