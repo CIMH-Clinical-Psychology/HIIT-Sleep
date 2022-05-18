@@ -24,6 +24,10 @@ from tkinter import  Tk
 import matplotlib
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter, median_filter
+from joblib import memory
+
+
+mem = memory.Memory('./tmp-cache/')
 
 
 stages_dict = {'WAKE':0, 'N1': 1, 'N2': 2, 'N3': 3, 'REM': 4, **{i:i for i in range(5, 10)}}
@@ -66,7 +70,7 @@ def choose_files(default_dir=None, exts='txt', title='Choose file(s)'):
 
     return files
     
-
+@mem.cache()
 def load_edf(edf_file, channels, references, crop_to_hypno=True):
     """convenience function to load an EDF+ with references without MNE.
     Workaround for https://github.com/mne-tools/mne-python/issues/10635"""
@@ -116,6 +120,23 @@ def infer_hypno_file(filename):
     warnings.warn(f'No Hypnogram found for {filename}, looked for: {possible_names}')
     return False
 
+
+def get_var_from_comments(file, var, comments='#', dtype=int):
+    """from a numpy txt file, extract variables that have been saved in
+    the style 
+    '# var=X'
+    """
+    with open(file, 'r') as f:
+        lines = f.read().split('\n')
+        lines = [line.strip() for line in lines]
+        lines = [line for line in lines if line.startswith('#')]
+        lines = [line for line in lines if f'{var}=' in line]
+    if len(lines)==0:
+        raise ValueError(f'variable "{var}" not found')
+    elif len(lines)>1:
+        raise ValueError(f'more than one variable "{var}" found')
+    
+    return int(lines[0].split('=')[1])
 
 
 def list_files(folder, ext='edf'):

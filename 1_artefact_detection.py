@@ -109,7 +109,7 @@ for edf_file in tqdm(files, desc='calculating artefacts'):
     np.savetxt(art_file, art, fmt='%d', newline='\n', header=comments)
 
     hypno_art = yasa.hypno_upsample_to_data(hypno, sf_hypno=1/30, data=art, sf_data=1/window_length)
-    art = art.sum(1)
+    art = art.max(1)
     art_total = np.sum(art) / len(art)*100
     art_wake = art[hypno_art==0].sum() / len(art[hypno_art==0])*100
     art_n1 = art[hypno_art==1].sum() / len(art[hypno_art==1])*100
