@@ -24,7 +24,7 @@ from tqdm import tqdm
 
 data_dir = 'Z:/Exercise_Sleep_Project/EDF Export EEG'
 
-show_plots = False # show the resulting artefact annotation
+show_plots = True # show the resulting artefact annotation
 show_plots_blocking = True  # will wait until you close the window to show the next file
 # only set blocking=False if you have enough memory
 
@@ -70,6 +70,7 @@ def artefact_heuristic(raw, wlen=10, plot=False):
         # axs[2].plot(val3)
         # axs[2].hlines(1000, 0, len(val2))
         plt.suptitle(raw.filenames)
+        plt.pause(0.1)
 
     noise_ind = np.vstack([val1>thresh1, val2>thresh2]).T
     
@@ -99,7 +100,7 @@ for edf_file in tqdm(files, desc='calculating artefacts'):
     #                               window=window_length,
     #                               verbose='info')
     
-    art = artefact_heuristic(raw, wlen=window_length).astype(int)
+    art = artefact_heuristic(raw, wlen=window_length, plot=show_plots).astype(int)
 
     art_file = f'{edf_file[:-4]}_artefacts.csv'
     comments = f'{window_length=}\n'

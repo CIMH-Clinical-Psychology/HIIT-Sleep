@@ -145,3 +145,17 @@ def list_files(folder, ext='edf'):
     files = [file for file in files if file.endswith(ext)]
     return files
 
+
+def get_subj_cond(filename):
+    """
+    split filename (e.g. AF4_EX_(1).edf) into subject (i.e. AF4) and
+    condition (i.e. EX)
+    """
+    subj = os.path.basename(filename)[:3]
+    if 'REST' in filename.upper():
+        cond = 'REST'
+    elif 'EX' in filename.upper():
+        cond = 'EX'
+    else:
+        raise ValueError('Neithe EX nor REST found in {filename}')
+    return subj, cond

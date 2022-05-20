@@ -84,18 +84,18 @@ for edf_file in edf_files:
         bands += [(freq, freq+freq_res, f'{freq}-{freq+freq_res}') for 
                   freq in np.arange(0, max_freq, freq_res)]
         res = yasa.bandpower(data=raw, hypno=hypno_stage, include=[stage_name],
-                             bands=bands, ch_names=channels)
+                             win_sec=10, bands=bands, ch_names=channels)
         res = res.reset_index(level=[0, 1])
         res['subject'] = subj
         res['group'] = 'REST' if 'REST' in edf_file else 'EX'
         res['winlen']=  window_length
         res['references'] = str(references)
         
-        cols = res.columns.tolist()[-5:] + res.columns.tolist()[:-5]
+        cols = res.columns.tolist()[-4:] + res.columns.tolist()[:-4]
         res = res[cols]
-        res.set_index('subject')
+        res = res.set_index('subject')
         df = df.append(res)
-
+    tqdm_loop.update()
 
 spectral_csv = f'{data_dir}/_results_spectral_power.csv'
 
