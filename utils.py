@@ -25,6 +25,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import maximum_filter, median_filter
 from joblib import memory
+from xml.etree.ElementTree import Element, SubElement
 
 
 mem = memory.Memory('./tmp-cache/')
@@ -159,3 +160,6 @@ def get_subj_cond(filename):
     else:
         raise ValueError('Neithe EX nor REST found in {filename}')
     return subj, cond
+
+
+

@@ -43,7 +43,7 @@ df = pd.DataFrame()
 
 for edf_file in edf_files:
 
-    subj = os.path.basename(edf_file)
+    subj, cond = utils.get_subj_cond(edf_file)
     
     tqdm_loop.set_description('Loading file')
     
@@ -71,8 +71,15 @@ for edf_file in edf_files:
     hypno_art[art_upsampled==1] = -1
     
     tqdm_loop.set_description('Calculating spectrogram')
+    
 
     # go through the stages and stage combinations that we want
+    res = pd.DataFrame({'Subject': subj, 
+                        'Condition': cond,
+                        'winlen': [window_length],
+                        'channel': str(channels),
+                        'references': str(references)})
+    
     for stage_name, stage in stages.items():
         # create a temporary copy of the hypnogram, in which all
         # the stages of interest are marked as True, and all others as False
@@ -83,20 +90,16 @@ for edf_file in edf_files:
                 (12, 16, 'Sigma'), (16, 30, 'Beta'), (30, 40, 'Gamma')]
         bands += [(freq, freq+freq_res, f'{freq}-{freq+freq_res}') for 
                   freq in np.arange(0, max_freq, freq_res)]
-        res = yasa.bandpower(data=raw, hypno=hypno_stage, include=[stage_name],
+        sp = yasa.bandpower(data=raw, hypno=hypno_stage, include=[stage_name],
                              win_sec=10, bands=bands, ch_names=channels)
-        res = res.reset_index(level=[0, 1])
-        res['subject'] = subj
-        res['group'] = 'REST' if 'REST' in edf_file else 'EX'
-        res['winlen']=  window_length
-        res['references'] = str(references)
+        sp = sp.reset_index(level=[0, 1])
+        sp = sp.drop(['Stage'], axis=1)
+        sp.columns = [f'{stage_name}_{c}' for c in sp.columns]
+        res = pd.concat([res, sp], axis=1)
         
-        cols = res.columns.tolist()[-4:] + res.columns.tolist()[:-4]
-        res = res[cols]
-        res = res.set_index('subject')
-        df = df.append(res)
+    df = pd.concat([df, res], axis=0)
     tqdm_loop.update()
-
+    
 spectral_csv = f'{data_dir}/_results_spectral_power.csv'
 
 df.to_csv(spectral_csv)
