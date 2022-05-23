@@ -91,7 +91,6 @@ def hypno2wonambi(hypno, artefacts, dataset):
 #%% SETTINGS
 data_dir = 'Z:/Exercise_Sleep_Project/EDF Export EEG'
 
-
 channels = [ 'Pz'] # channel(s) that the spectrogram creation should be performed on
 references = ['M1', 'M2'] # list of channels used to construct a reference
 
@@ -117,13 +116,12 @@ edf_files = utils.list_files(data_dir, ext='edf')
 
 tmp_dir = tempfile.mkdtemp()
 
-df = pd.DataFrame()
 
 tqdm_loop = tqdm(edf_files)
 
 df_summary = pd.DataFrame()
 
-for edf_file in edf_files[:2]:
+for edf_file in edf_files:
     subj, cond = utils.get_subj_cond(edf_file)
     tqdm_loop.set_description(f'{subj}_{cond}, Loading data')
 
@@ -141,12 +139,14 @@ for edf_file in edf_files[:2]:
     winlen = utils.get_var_from_comments(art_file, 'window_length')
     
     if spindle_peak=='individual':
-        spindle_peak = get_individual_spindle_peak(raw, hypno_upsampled)
-        
+        spindle_peak_freq = get_individual_spindle_peak(raw, hypno_upsampled)
+    else:
+        spindle_peak_freq = spindle_peak
         
     tqdm_loop.set_description(f'{subj}_{cond}, Determining segments')
 
-    spindle_band = (spindle_peak-spindle_range, spindle_peak+spindle_range)
+    spindle_band = (spindle_peak_freq-spindle_range, 
+                    spindle_peak_freq+spindle_range)
     
     detector = wonambi.detect.spindle.DetectSpindle(method=method, 
                                                frequency=spindle_band,
@@ -180,17 +180,30 @@ for edf_file in edf_files[:2]:
         df_mean_stage = df_spindles[mean_vars].mean()
         df_mean_stage['density'] = spindles.density[0]
         df_mean_stage.index += f'_stage{stage}'
-        df_mean_stage.name='vc'
         df_mean = pd.concat([df_mean, df_mean_stage], axis=0)
         
     df_mean.name = f'{subj}_{cond}'
+    df_mean['subj'] = subj
+    df_mean['condition'] = cond
+    
     df_summary = df_summary.append(df_mean)
         
     tqdm_loop.update()
     
     spindles_csv = edf_file + '_spindles.csv'
+    df.sort_values('start', inplace=True)
     df.to_csv(spindles_csv)
     
-    
+df_summary['method'] = method    
+df_summary['spindle_peak'] = spindle_peak
+df_summary['spindle_range'] = str(spindle_range)
+df_summary['spindle_duration'] = str(spindle_duration)
+
+cols = list(df_summary.columns)
+cols = cols[-6:]+ cols[:-6]
+df_summary = df_summary[cols]
+
 summary_csv = f'{data_dir}/_summary_spindles.csv'
 df_summary.to_csv(summary_csv)
+
+sns.scatterplot(data=df_summary, x='subj', y='density_stage2', hue='condition')
