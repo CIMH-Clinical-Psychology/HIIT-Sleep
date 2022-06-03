@@ -113,12 +113,9 @@ spindle_duration = (0.5, 2) # min and max duration of spindles
 #%%
 
 edf_files = utils.list_files(data_dir, ext='edf')
-
 tmp_dir = tempfile.mkdtemp()
 
-
 tqdm_loop = tqdm(edf_files)
-
 df_summary = pd.DataFrame()
 
 for edf_file in edf_files:
@@ -203,7 +200,12 @@ cols = list(df_summary.columns)
 cols = cols[-6:]+ cols[:-6]
 df_summary = df_summary[cols]
 
-summary_csv = f'{data_dir}/_summary_spindles.csv'
+summary_csv = f'{data_dir}/_results_spindles_RMS.csv'
 df_summary.to_csv(summary_csv)
 
-sns.scatterplot(data=df_summary, x='subj', y='density_stage2', hue='condition')
+fig, axs = plt.subplots(2, 1)
+
+sns.scatterplot(data=df_summary, x='subj', y='density_stage2', hue='condition', ax=axs[0])
+sns.scatterplot(data=df_summary, x='subj', y='density_stage3', hue='condition', ax=axs[1])
+axs[0].set_ylim([0.5, 2.5])
+axs[1].set_ylim([0.5, 2.5])

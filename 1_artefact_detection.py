@@ -19,6 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import utils # must be executed in the same folder as the utils.py
 from tqdm import tqdm
+from scipy.stats import kurtosis
 
 #%% SETTINGS
 
@@ -45,6 +46,8 @@ def artefact_heuristic(raw, wlen=10, plot=False):
     
     thresh1 = 50 # standarddeviation of first derivative, should reliably detect noise
     thresh2 = 600 # 600 uV peak-to-peak, should be enough for k komplex
+    thresh3 = 20 # 600 uV peak-to-peak, should be enough for k komplex
+
     
     data = raw.get_data().squeeze()*1e6
     sfreq = int(raw.info['sfreq'])
@@ -59,20 +62,20 @@ def artefact_heuristic(raw, wlen=10, plot=False):
         view = data[t:t+stepsize]
         val1[i] = np.std(np.diff(view))
         val2[i] = (view.max()-view.min())
-        val3[i] = np.abs(view).sum()/sfreq/1e6
+        val3[i] = kurtosis(np.diff(view))
     
     if plot:
-        fig, axs = plt.subplots(2, 1); axs=axs.flatten()
+        fig, axs = plt.subplots(3, 1); axs=axs.flatten()
         axs[0].plot(val1)
         axs[0].hlines(thresh1, 0, len(val1))
         axs[1].plot(val2)
         axs[1].hlines(thresh2, 0, len(val2))
-        # axs[2].plot(val3)
-        # axs[2].hlines(1000, 0, len(val2))
+        axs[2].plot(val3)
+        axs[2].hlines(thresh3, 0, len(val2))
         plt.suptitle(raw.filenames)
         plt.pause(0.1)
 
-    noise_ind = np.vstack([val1>thresh1, val2>thresh2]).T
+    noise_ind = np.vstack([val1>thresh1, val2>thresh2, val3>thresh3]).T
     
     return noise_ind
 
@@ -81,7 +84,7 @@ files = utils.list_files(data_dir)
 
 df = pd.DataFrame()
 
-for edf_file in tqdm(files, desc='calculating artefacts'):
+for edf_file in tqdm(files[25:], desc='calculating artefacts'):
     
     # first of all, load the file itself into memory
     raw = utils.load_edf(edf_file, channels, references)
@@ -138,7 +141,7 @@ for edf_file in tqdm(files, desc='calculating artefacts'):
         else:
             subprocess.Popen(['python', 'artefact_explorer.py', edf_file], 
                              stdout=subprocess.PIPE)
-    
+    stop
          
       
 artefact_csv = f'{data_dir}/_results_artefacts.csv'
