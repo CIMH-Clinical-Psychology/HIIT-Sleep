@@ -176,6 +176,8 @@ for edf_file in edf_files:
                      'ptp_orig']
         df_mean_stage = df_spindles[mean_vars].mean()
         df_mean_stage['density'] = spindles.density[0]
+        df_mean_stage['count'] = len(df_spindles)
+        
         df_mean_stage.index += f'_stage{stage}'
         df_mean = pd.concat([df_mean, df_mean_stage], axis=0)
         
